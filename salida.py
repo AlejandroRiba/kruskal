@@ -53,31 +53,35 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
         aux = []
         dc = wx.PaintDC(self)
         dc.Clear()
+        node_spacing_x = 120
+        node_spacing_y = 100
+        # Definir la posición de los nodos
         for x in range(self.n):
             if x == 0:
                 px = 55
-                py = self.zy - 300
+                py = self.zy - 260
             elif x == 7:
-                px = 400
-                py = self.zy - 300
+                px = 460
+                py = self.zy - 260
             elif x == 1:
-                px = 55 + (80 * x) + (10 * x)
+                px = 55 + (100 * x) + (20 * x)
                 py = self.zy - 350
             elif x % 2 == 0:
-                px = 55 + (40 * x) + (10 * x)
-                py = self.zy - 250
+                px = 55 + (100 * (x-1)) + (20 * (x-1))
+                py = self.zy - 200
             else:
-                px = 55 + (40 * x) + (20 * x)
+                px = 55 + (100 * x) + (20 * x)
                 py = self.zy - 350
-            dc.DrawCircle(px, py, 30)
-            dc.DrawText(str(x+1), px + 5, py - 10)
+            dc.DrawCircle(px, py, 20)  # Radio de 12 px
+            dc.DrawText(str(x + 1), px - 10, py - 10)
             aux.append(PosicionP(x, px, py))
 
-        pen = wx.Pen("BLUE", 3, wx.SOLID)
-        pen1 = wx.Pen("BLACK",1,wx.SOLID)
+        # Dibujar las líneas
+        pen = wx.Pen("BLUE", 2, wx.SOLID)
+        pen1 = wx.Pen("BLACK", 1, wx.SOLID)
         for x in range(self.n):
             for y in range(self.n):
-                if self.vector[x][y] != 0 and x < y:
+                if x < y:
                     x1, y1, x2, y2 = None, None, None, None
                     for z in aux:
                         if z.n == x:
@@ -86,25 +90,27 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
                         if z.n == y:
                             x2 = z.x
                             y2 = z.y
-                    dc.SetPen(pen)
-                    dc.DrawLine(x1 + 27, y1 + 15, x2 - 30, y2)
-                    # dibujo de texto
-                    dc.DrawText(str(self.vector[x][y]), int(x1 + ((x2 - x1) / 2) + 5), int(y1 + ((y2 - y1) / 2)))
-                elif self.vectori[x][y] != 0 and x < y:
-                    x1, y1, x2, y2 = None, None, None, None
-                    for z in aux:
-                        if z.n == x:
-                            x1 = z.x
-                            y1 = z.y
-                        if z.n == y:
-                            x2 = z.x
-                            y2 = z.y
-                    dc.SetPen(pen1)  # Utilizar pen1 para dibujar la línea
-                    dc.DrawLine(x1 + 27, y1 + 15, x2 - 30, y2)
-                    # dibujo de texto
-                    dc.DrawText(str(self.vectori[x][y]), int(x1 + ((x2 - x1) / 2) + 5), int(y1 + ((y2 - y1) / 2)))
+                    
+                    if x1 is not None and x2 is not None:
+                        if self.vector[x][y] != 0:
+                            dc.SetPen(pen)
+                            dc.DrawLine(x1, y1, x2, y2)
+                            # Ajuste de la posición del texto para que esté sobre la línea
+                            text_x = int((x1 + x2) / 2) - 10  # Ajuste horizontal
+                            text_y = int((y1 + y2) / 2) - 10  # Ajuste vertical
+                            dc.DrawText(str(self.vector[x][y]), text_x, text_y)
+                        elif self.vectori[x][y] != 0:
+                            dc.SetPen(pen1)
+                            dc.DrawLine(x1, y1, x2, y2)
+                            # Ajuste de la posición del texto para que esté sobre la línea
+                            text_x = int((x1 + x2) / 2) - 10  # Ajuste horizontal
+                            text_y = int((y1 + y2) / 2) - 10  # Ajuste vertical
+                            dc.DrawText(str(self.vectori[x][y]), text_x, text_y)
+
+
+
 
 if __name__ == '__main__':
     app = wx.App()
-    InterfazSalida(None, title='Algoritmo de Kruskal (Salida)', n=5, vectorMostrar=[[0, 2, 0, 6, 0], [2, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]])
+    InterfazSalida(None, title='Algoritmo de Kruskal (Salida)', n=5, vectorMostrar=[[0, 0, 0, 6, 0], [0, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]],vectori=[[0, 2, 0, 6, 0], [2, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]])
     app.MainLoop()
