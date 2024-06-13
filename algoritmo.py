@@ -1,86 +1,78 @@
-from Posicion import  Posicion
+from Posicion import Posicion
+import copy
 
 class Kruskal(object):
-	"""docstring for Algoritmo"""
-	"""Algoritmo de Dikstra desarrollado en python"""
-	#constructor de la clase
-	def __init__(self, vector,c ):
-		#c es el numero de elementos que contiene el vector
-		self.a=c
-		#vector contiene todos los elementos de la tabla de aristas
-		self.vectorEntrada= vector
-		#se crea el vector de salida
-		self.vectorSalida=[]
-		#se llama a la funcion rellenar para colocar puros 0s en el verctor de salida
-		self.rellenar(c)
+    """Algoritmo de Kruskal desarrollado en Python"""
+    
+    def __init__(self, vector, c):
+        """
+        Constructor de la clase Kruskal.
+        
+        :param vector: Matriz de adyacencia que representa el grafo.
+        :param c: Número de elementos que contiene el vector.
+        """
+        self.a = c
+        self.vectorEntrada = copy.deepcopy(vector)
+        self.vectorSalida = []
+        self.rellenar(c)
 
-	def solucionar(self):
-		print"iniciar"
-		i=0
-		for x in xrange(0,self.a):
-			self.vectorEntrada[x][x]=0
-		#hacer la busqueda mientras no tiene la cantidad de aristas necesarias
-		while (i<self.a-1):
-			b=self.menor()
-			if b!=None:
-				#se  envia la informacuon 
-				self.t=self.buscar(b.y)
-				if self.t!=False:
-					self.vectorSalida[b.x][b.y]=self.vectorEntrada[b.x][b.y]
-					self.vectorSalida[b.y][b.x]=self.vectorEntrada[b.x][b.y]
-					i=i+1
-				self.vectorEntrada[b.x][b.y]=0
-				self.vectorEntrada[b.y][b.x]=0
-						
+    def solucionar(self):
+        """
+        Método principal que resuelve el problema utilizando el algoritmo de Kruskal.
+        """
+        ##print("iniciar")
+        i = 0
+        for x in range(self.a):
+            self.vectorEntrada[x][x] = 0
+        
+        while i < self.a - 1:
+            b = self.menor()
+            if b is not None:
+                self.t = self.buscar(b.y)
+                if self.t:
+                    self.vectorSalida[b.x][b.y] = self.vectorEntrada[b.x][b.y]
+                    self.vectorSalida[b.y][b.x] = self.vectorEntrada[b.x][b.y]
+                    i += 1
+                self.vectorEntrada[b.x][b.y] = 0
+                self.vectorEntrada[b.y][b.x] = 0
 
-	def rellenar(self,b):
-		self.aux=[]	
-		#funcion para rellenar 0s
-		for x in xrange(0,b):
-			self.aux=[]
-			for y in xrange(0,b):	
-				self.aux.append(0)
-			self.vectorSalida.append(self.aux)
-	def menor(self):
-		#aca se busca el numero menor
-		m=0
-		posiciones=None
-		for x in xrange(0,self.a):
-			for y in xrange(0,self.a):
-				print str(x)+" "+str(y)+": "+str(self.vectorEntrada[x][y])
-				if m==0:
-					if self.vectorEntrada[x][y]!=0:
-						m=self.vectorEntrada[x][y]
-						posiciones = Posicion(x,y)
-				else:
-					if self.vectorEntrada[x][y]!=0:
-						if self.vectorEntrada[x][y]<m:
-							m=self.vectorEntrada[x][y]
-							posiciones = Posicion(x,y)
-		return posiciones
-	def buscar(self,z):
+    def rellenar(self, b):
+        """
+        Método para rellenar el vector de salida con ceros.
+        
+        :param b: Tamaño de la matriz.
+        """
+        for x in range(b):
+            aux = [0] * b
+            self.vectorSalida.append(aux)
 
-		#se busca si el elemento ya esta en el conjunto solucion
-		t=True
-		for x in xrange(0,self.a):
-			if self.vectorSalida[x][z]!=0:
-				t= False
-		return t
+    def menor(self):
+        """
+        Método para encontrar la arista de menor peso.
+        
+        :return: Objeto Posicion con las coordenadas de la arista de menor peso.
+        """
+        m = 0
+        posiciones = None
+        for x in range(self.a):
+            for y in range(self.a):
+                ##print(f"{x} {y}: {self.vectorEntrada[x][y]}")
+                if m == 0 and self.vectorEntrada[x][y] != 0:
+                    m = self.vectorEntrada[x][y]
+                    posiciones = Posicion(x, y)
+                elif self.vectorEntrada[x][y] != 0 and self.vectorEntrada[x][y] < m:
+                    m = self.vectorEntrada[x][y]
+                    posiciones = Posicion(x, y)
+        return posiciones
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def buscar(self, z):
+        """
+        Método para verificar si un nodo ya está en el conjunto solución.
+        
+        :param z: Nodo a buscar.
+        :return: True si el nodo no está en el conjunto solución, False en caso contrario.
+        """
+        for x in range(self.a):
+            if self.vectorSalida[x][z] != 0:
+                return False
+        return True
