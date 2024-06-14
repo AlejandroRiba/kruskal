@@ -36,7 +36,7 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
         self.caja1 = wx.StaticText(self, id=-1, label=peso, pos=(self.zx / 4, self.posiy + n * 21))
         # Dibujar Círculos
         self.Bind(wx.EVT_PAINT, self.pintar)  # evento para dibujar
-        self.Move((800, 250))  # posición de la ventana en el escritorio
+        self.Centre()  # posición de la ventana en el escritorio
         self.Show()  # mostrar la ventana
 
     # función para calcular peso
@@ -53,32 +53,29 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
         aux = []
         dc = wx.PaintDC(self)
         dc.Clear()
-        node_spacing_x = 120
-        node_spacing_y = 100
         # Definir la posición de los nodos
         for x in range(self.n):
             if x == 0:
-                px = 55
-                py = self.zy - 260
+                px = 50
+                py = self.zy - 230
             elif x == 7:
-                px = 460
-                py = self.zy - 260
-            elif x == 1:
-                px = 55 + (100 * x) + (20 * x)
-                py = self.zy - 350
-            elif x % 2 == 0:
-                px = 55 + (100 * (x-1)) + (20 * (x-1))
-                py = self.zy - 200
+                px = 890
+                py = self.zy - 230
+            elif (x % 2 == 0):
+                px = 120 + (120 * (x-1)) 
+                py = self.zy - 100
             else:
-                px = 55 + (100 * x) + (20 * x)
-                py = self.zy - 350
-            dc.DrawCircle(px, py, 20)  # Radio de 12 px
-            dc.DrawText(str(x + 1), px - 10, py - 10)
+                px = 120 + (120 * x)
+                py = self.zy - 400
+            dc.SetPen(wx.Pen(wx.Colour(0,0,255), 2))
+            dc.SetBrush(wx.Brush(wx.Colour(255, 255, 255)))
+            dc.DrawCircle(px, py, 30)  # Radio de 12 px
+            dc.DrawText(str(x + 1), px + 5, py - 15)
             aux.append(PosicionP(x, px, py))
 
         # Dibujar las líneas
-        pen = wx.Pen("BLUE", 2, wx.SOLID)
-        pen1 = wx.Pen("BLACK", 1, wx.SOLID)
+        pen = wx.Pen(wx.Colour(255, 0, 0), 3, wx.SOLID)
+        pen1 = wx.Pen(wx.Colour(0, 0, 0), 1, wx.SOLID)
         for x in range(self.n):
             for y in range(self.n):
                 if x < y:
@@ -112,5 +109,7 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
 
 if __name__ == '__main__':
     app = wx.App()
-    InterfazSalida(None, title='Algoritmo de Kruskal (Salida)', n=5, vectorMostrar=[[0, 0, 0, 6, 0], [0, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]],vectori=[[0, 2, 0, 6, 0], [2, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]])
+    InterfazSalida(None, title='Algoritmo de Kruskal (Salida)', n=5, 
+                  vectorMostrar=[[0, 0, 0, 6, 0], [0, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]],
+                  vectori=[[0, 2, 0, 6, 0], [2, 0, 3, 8, 5], [0, 3, 0, 0, 7], [6, 8, 0, 0, 9], [0, 5, 7, 9, 0]])
     app.MainLoop()
