@@ -9,13 +9,19 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
     def __init__(self, parent, title, n, vectorMostrar,vectori):
         # calculamos el tamaño de la ventana
         self.zx = 200 + n * 100
-        self.zy = 600 + n * 30
+        self.zy = 500 + n * 30
         self.n = n
         self.vector = vectorMostrar
         self.vectori = vectori
         # llamamos al constructor de la clase padre
         super(InterfazSalida, self).__init__(parent, title=title, size=(self.zx, self.zy))
-        # creación de variables auxiliares para el manejo de los labels
+        self.caja = []
+        self.cajasDeTexto = []
+        self.mensajex = []
+        self.mensajey = []
+        self.posix = 60
+        self.posiy = 60
+        """ # creación de variables auxiliares para el manejo de los labels
         self.cajasDeTexto = []
         self.mensajex = []
         self.mensajey = []
@@ -28,12 +34,24 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
             for y in range(n):
                 self.mensajey.append(wx.StaticText(self, id=-1, label="y: " + str(y + 1), pos=(35, self.posiy + y * 20 + 5)))
                 self.caja.append(wx.StaticText(self, id=-1, label=str(vectori[x][y]), pos=(self.posix + x * 75, self.posiy + y * 20)))
-            self.cajasDeTexto.append(self.caja)
-        self.caja = wx.StaticText(self, id=-1, label="Algoritmo de Kruskal", pos=(self.zx / 2, 20))
-        self.caja0 = wx.StaticText(self, id=-1, label="Grafica del algoritmo de Kruskal", pos=(self.zx / 4, self.zy - 500))
+            self.cajasDeTexto.append(self.caja) """
+        self.caja = wx.StaticText(self, id=-1, label="Algoritmo de Kruskal", pos=(self.posix, 20))
+        font = self.caja.GetFont()
+        font.PointSize += 10  # Aumentar el tamaño de la fuente
+        self.caja.SetFont(font)
+        
+        self.caja0 = wx.StaticText(self, id=-1, label="Grafica del algoritmo de Kruskal", pos=(self.posix, 60))
+        font = self.caja0.GetFont()
+        font.PointSize += 10  # Aumentar el tamaño de la fuente
+        self.caja0.SetFont(font)
+        
         peso_int = self.calcularPeso()
         peso = "El peso del grafo es de: " + str(peso_int)
-        self.caja1 = wx.StaticText(self, id=-1, label=peso, pos=(self.zx / 4, self.posiy + n * 21))
+        self.caja1 = wx.StaticText(self, id=-1, label=peso, pos=(self.posix, 100))
+        font = self.caja1.GetFont()
+        font.PointSize += 10  # Aumentar el tamaño de la fuente
+        self.caja1.SetFont(font)
+        
         # Dibujar Círculos
         self.Bind(wx.EVT_PAINT, self.pintar)  # evento para dibujar
         self.Centre()  # posición de la ventana en el escritorio
@@ -53,6 +71,9 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
         aux = []
         dc = wx.PaintDC(self)
         dc.Clear()
+        font = dc.GetFont()
+        font.SetPointSize(15)  # Ajusta el tamaño de la fuente según tus necesidades
+        dc.SetFont(font)
         # Definir la posición de los nodos
         for x in range(self.n):
             if x == 0:
@@ -67,10 +88,10 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
             else:
                 px = 120 + (120 * x)
                 py = self.zy - 400
-            dc.SetPen(wx.Pen(wx.Colour(0,0,255), 2))
+            dc.SetPen(wx.Pen(wx.Colour(0,0,255), 5))
             dc.SetBrush(wx.Brush(wx.Colour(255, 255, 255)))
             dc.DrawCircle(px, py, 30)  # Radio de 12 px
-            dc.DrawText(str(x + 1), px + 5, py - 15)
+            dc.DrawText(str(x + 1), px + 5, py - 25)
             aux.append(PosicionP(x, px, py))
 
         # Dibujar las líneas
@@ -93,19 +114,16 @@ class InterfazSalida(wx.Frame):  # iniciando la clase del formulario
                             dc.SetPen(pen)
                             dc.DrawLine(x1, y1, x2, y2)
                             # Ajuste de la posición del texto para que esté sobre la línea
-                            text_x = int((x1 + x2) / 2) - 10  # Ajuste horizontal
-                            text_y = int((y1 + y2) / 2) - 10  # Ajuste vertical
+                            text_x = int((x1 + x2) / 2) - 20  # Ajuste horizontal
+                            text_y = int((y1 + y2) / 2) - 25  # Ajuste vertical
                             dc.DrawText(str(self.vector[x][y]), text_x, text_y)
                         elif self.vectori[x][y] != 0:
                             dc.SetPen(pen1)
                             dc.DrawLine(x1, y1, x2, y2)
                             # Ajuste de la posición del texto para que esté sobre la línea
-                            text_x = int((x1 + x2) / 2) - 10  # Ajuste horizontal
-                            text_y = int((y1 + y2) / 2) - 10  # Ajuste vertical
+                            text_x = int((x1 + x2) / 2) - 20  # Ajuste horizontal
+                            text_y = int((y1 + y2) / 2) - 25  # Ajuste vertical
                             dc.DrawText(str(self.vectori[x][y]), text_x, text_y)
-
-
-
 
 if __name__ == '__main__':
     app = wx.App()
